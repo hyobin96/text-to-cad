@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: spring-ai-mcp-server
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+
+  ai:
+    openai:
+      api-key: ${OPEN_AI_KEY}
+      embedding:
+        options:
+          model: text-embedding-3-small
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        schema-name: public
+        table-name: rag_document_store
+
+    mcp:
+      server:
+        protocol: streamable
+
+server:
+  port: 8081
+
+app:
+  upload-dir: ../uploads
+
+logging:
+  level:
+    "[org.springframework.ai]": DEBUG
+

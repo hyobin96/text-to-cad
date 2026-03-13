@@ -1,0 +1,225 @@
+:root {
+    --bg: #0b1220;
+    --panel: #111827;
+    --border: #2b3648;
+    --text-main: #e5e7eb;
+    --text-sub: #9ca3af;
+    --user-bg: #2563eb;
+    --assistant-bg: #1f2937;
+    --assistant-2: #374151;
+    --good: #10b981;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: radial-gradient(circle at 10% 0%, #14213d, var(--bg));
+    color: var(--text-main);
+}
+
+.app-shell {
+    height: 100vh;
+    max-width: 980px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 12px;
+    gap: 10px;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #0f172a;
+}
+
+.chat-header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.chat-header p {
+    margin: 4px 0 0;
+    color: var(--text-sub);
+    font-size: 13px;
+}
+
+.chat-header button {
+    border: 1px solid var(--border);
+    background: #111827;
+    color: var(--text-main);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+.chat-area {
+    background: #0f172a;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: grid;
+}
+
+.messages {
+    padding: 16px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    width: min(95%, 850px);
+    padding: 12px 14px;
+    border-radius: 12px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    font-size: 15px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.message.user {
+    align-self: flex-end;
+    background: var(--user-bg);
+    color: #dbeafe;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    background: var(--assistant-bg);
+    border: 1px solid var(--assistant-2);
+}
+
+.message .meta {
+    color: var(--text-sub);
+    font-size: 12px;
+    margin-bottom: 6px;
+    opacity: 0.9;
+}
+
+.composer-wrap {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px;
+    background: #111827;
+}
+
+.composer {
+    margin: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.composer textarea {
+    width: 100%;
+    min-height: 56px;
+    resize: none;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #0b1220;
+    color: var(--text-main);
+    padding: 10px 12px;
+    font-size: 15px;
+    outline: none;
+}
+
+.composer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#files {
+    display: none;
+}
+
+#send-btn {
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--good), #059669);
+    color: #042f2e;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.attachments {
+    min-height: 22px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.drop-zone {
+    position: relative;
+    border: 1px dashed #3b82f6;
+    border-radius: 12px;
+    padding: 12px;
+    background: #0d1626;
+    color: #93c5fd;
+    cursor: pointer;
+    text-align: center;
+}
+
+.drop-zone.is-dragover {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.14);
+}
+
+.drop-zone-text {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.drop-zone-hint {
+    color: #bfdbfe;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.attachment {
+    background: #172033;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    color: #cbd5e1;
+    font-size: 12px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.typing {
+    color: #93c5fd;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .message {
+        width: 100%;
+    }
+}

@@ -1,0 +1,12 @@
+### IntelliJ ###
+.idea
+
+### Gradle ###
+.gradle
+build
+
+### env ###
+.env
+
+### Codex ###
+AGENTS.md
