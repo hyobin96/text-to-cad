@@ -4,9 +4,16 @@
 ### Gradle ###
 .gradle
 build
+bin
 
 ### env ###
 .env
 
 ### Codex ###
 AGENTS.md
+
+### Mac ###
+.DS_Store
+
+### VS Code ###
+.vscode

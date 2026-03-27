@@ -3,9 +3,9 @@ spring:
     name: mcp-client
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${JDBC_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   ai:
     openai:
@@ -29,19 +29,19 @@ spring:
         streamable-http:
           connections:
             server1:
-              url: http://localhost:8081
+              url: ${MCP_SERVER_URL:http://localhost:8081}
 
   servlet:
     multipart:
       enabled: true
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: ${MAX_FILE_SIZE:20MB}
+      max-request-size: ${MAX_REQUEST_SIZE:20MB}
 
 server:
-  port: 8080
+  port: ${MCP_CLIENT_CONTAINER:8080}
 
 app:
-  upload-dir: ../uploads
+  upload-dir: ${APP_UPLOAD_DIR:/app/uploads}
 
 logging:
   level:

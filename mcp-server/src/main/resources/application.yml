@@ -3,9 +3,9 @@ spring:
     name: spring-ai-mcp-server
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${JDBC_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   ai:
     openai:
@@ -21,13 +21,13 @@ spring:
 
     mcp:
       server:
-        protocol: streamable
+        protocol: STREAMABLE
 
 server:
-  port: 8081
+  port: ${MCP_SERVER_CONTAINER:8081}
 
 app:
-  upload-dir: ../uploads
+  upload-dir: ${APP_UPLOAD_DIR:/app/uploads}
 
 logging:
   level:

@@ -1,0 +1,114 @@
+services:
+  reverse_proxy:
+    image: nginx:1.25-alpine
+    container_name: skala-reverse-proxy
+    ports:
+      - "${REVERSE_PROXY_HOST}:${REVERSE_PROXY_CONTAINER}"
+    environment:
+      - MCP_CLIENT_CONTAINER=${MCP_CLIENT_CONTAINER}
+    volumes:
+      - ./reverse_proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - public
+    restart: unless-stopped
+    depends_on:
+      mcp-client:
+        condition: service_healthy
+  postgres:
+    build:
+      context: ./docker/postgres
+    container_name: skala-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - private
+    restart: always
+
+  mcp-server:
+    build:
+      context: ./mcp-server
+    container_name: skala-mcp-server
+    env_file:
+      - ./mcp-server/.env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JDBC_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_DB}
+      - OPEN_AI_KEY=${OPEN_AI_KEY}
+      - MCP_CLIENT_URL=http://mcp-client:${MCP_CLIENT_CONTAINER}
+      - APP_UPLOAD_DIR=${APP_UPLOAD_DIR}
+      - MCP_SERVER_CONTAINER=${MCP_SERVER_CONTAINER}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - file_volume:${APP_UPLOAD_DIR}
+    networks:
+      - private
+      - public
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${MCP_SERVER_CONTAINER}/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+
+  mcp-client:
+    build:
+      context: ./mcp-client
+    container_name: skala-mcp-client
+    env_file:
+      - ./mcp-client/.env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JDBC_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_DB}
+      - OPEN_AI_KEY=${OPEN_AI_KEY}
+      - MCP_SERVER_URL=http://mcp-server:${MCP_SERVER_CONTAINER}
+      - APP_UPLOAD_DIR=${APP_UPLOAD_DIR}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE}
+      - MAX_REQUEST_SIZE=${MAX_REQUEST_SIZE}
+      - MCP_CLIENT_CONTAINER=${MCP_CLIENT_CONTAINER}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    volumes:
+      - file_volume:${APP_UPLOAD_DIR}
+    networks:
+      - public
+      - private
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${MCP_CLIENT_CONTAINER}/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  postgres_volume:
+    name: ${POSTGRES_VOLUME_NAME}
+  file_volume:
+    name: ${FILE_VOLUME_NAME}
+
+networks:
+  public:
+  private:
+    internal: true
+    
